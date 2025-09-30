@@ -1,0 +1,2 @@
+datasets/pitches_2024.csv filter=lfs diff=lfs merge=lfs -text
+datasets/mlb_pitch_data_2020_2024.csv filter=lfs diff=lfs merge=lfs -text
