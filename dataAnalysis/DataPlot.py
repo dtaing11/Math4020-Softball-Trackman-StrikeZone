@@ -4,65 +4,59 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 DATASETS = {
-    "2020": "../datasets/pitches_2020.csv",
-    "2021": "../datasets/pitches_2021.csv",
-    "2022": "../datasets/pitches_2022.csv",
-    "2023": "../datasets/pitches_2023.csv",
-    "2024": "../datasets/pitches_2024.csv",
+    "StrikeZoneData": "../datasets/StrikeZoneData.csv",
 }
 
+Plat_LocSide = "PlateLocSide"
+Plat_LocHeight = "PlateLocHeight"
+Swing = "Swing"
+
 def load_all_numeric(file_path: str) -> pd.DataFrame:
-    """Load CSV, keep every row that has numeric px, pz, is_strike. No range filtering."""
+    """Load CSV, keep every row that has numeric Plat_LocSide, Plat_LocHeight, Swing. No range filtering."""
     print(f"[INFO] Loading {file_path}")
     # read consistently to avoid DtypeWarning chunking issues
     df = pd.read_csv(file_path, low_memory=False)
 
     # required columns presence check
-    required = ["px", "pz", "is_strike", "sz_top", "sz_bot"]
+    required = [Plat_LocSide, Plat_LocHeight, Swing]
     for col in required:
         if col not in df.columns:
             raise SystemExit(f"Missing required column: {col}")
 
     # coerce to numeric but DO NOT clip/range-filter
-    df["px"] = pd.to_numeric(df["px"], errors="coerce")
-    df["pz"] = pd.to_numeric(df["pz"], errors="coerce")
-    df["is_strike"] = pd.to_numeric(df["is_strike"], errors="coerce")
+    df[Plat_LocSide]   = pd.to_numeric(df[Plat_LocSide],   errors="coerce")
+    df[Plat_LocHeight] = pd.to_numeric(df[Plat_LocHeight], errors="coerce")
+    df[Swing]          = pd.to_numeric(df[Swing],          errors="coerce")
+
 
     # keep every numeric record; just drop rows that aren't numeric
-    df = df.dropna(subset=["px", "pz", "is_strike"])
+    df = df.dropna(subset=[Plat_LocSide,Plat_LocHeight, Swing])
 
-    # ensure is_strike is 0/1 if it's e.g. floats like 0.0/1.0
-    df["is_strike"] = (df["is_strike"] > 0).astype(int)
+    # ensure Swing is 0/1 if it's e.g. floats like 0.0/1.0
+    df[Swing] = (df[Swing] > 0).astype(int)
 
     return df
 
 def plot_scatter_all(df: pd.DataFrame, year: str, outdir="plots"):
     Path(outdir).mkdir(exist_ok=True)
 
-    strikes = df[df["is_strike"] == 1]
-    balls   = df[df["is_strike"] == 0]
+    strikes = df[df[Swing] == 1]
+    balls   = df[df[Swing] == 0]
 
-    # compute median sz_top/sz_bot if present/valid; otherwise default
-    sz_top = pd.to_numeric(df.get("sz_top"), errors="coerce").median()
-    sz_bot = pd.to_numeric(df.get("sz_bot"), errors="coerce").median()
-    if not (pd.notna(sz_top) and pd.notna(sz_bot) and sz_top > sz_bot):
-        sz_bot, sz_top = 1.5, 3.5
 
     plt.figure(figsize=(6, 7))
-    plt.scatter(balls["px"],   balls["pz"],   color="blue", s=8, alpha=0.5, label="Ball")
-    plt.scatter(strikes["px"], strikes["pz"], color="red",  s=8, alpha=0.5, label="Strike")
+    plt.scatter(balls[Plat_LocSide],   balls[Plat_LocHeight],   color="blue", s=8, alpha=0.5, label="Not Swing")
+    plt.scatter(strikes[Plat_LocSide], strikes[Plat_LocHeight], color="red",  s=8, alpha=0.5, label="Swing")
 
     # zone guides (no x/y limits → show entire numeric range)
     plate_half = 0.83
     plt.axvline(-plate_half, linestyle=":", color="gray")
     plt.axvline( plate_half, linestyle=":", color="gray")
-    plt.axhline(sz_bot, linestyle="--", color="gray")
-    plt.axhline(sz_top, linestyle="--", color="gray")
     plt.axvline(0.0, linewidth=1, color="black", alpha=0.6)
 
-    plt.xlabel("px (ft)")
-    plt.ylabel("pz (ft)")
-    plt.title(f"Pitch Locations ({year}) — Red = Strike, Blue = Ball")
+    plt.xlabel("Plat_Locside (ft)")
+    plt.ylabel("Plat_LocHeight (ft)")
+    plt.title(f"Pitch Locations Red = Swing, Blue = Not Swing")
     plt.legend(loc="upper right")
     plt.tight_layout()
 

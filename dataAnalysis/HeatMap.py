@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
-from scipy.ndimage import gaussian_filter
 
 DATASETS = {
     "2020": "../datasets/pitches_2020.csv",
@@ -57,7 +56,7 @@ def plot_heatmap(df, year, outdir="heatMap", bins_x=150 , bins_z=150):
         extent=[px_min, px_max, pz_min, pz_max],
         aspect="auto", cmap="coolwarm", vmin=0, vmax=1,
     )
-    plt.colorbar(im, label="Strike Probability")
+    plt.colorbar(im, label="")
     plt.axhline(sz_bot, linestyle="--", color="black")
     plt.axhline(sz_top, linestyle="--", color="black")
     plate_half = 0.83
