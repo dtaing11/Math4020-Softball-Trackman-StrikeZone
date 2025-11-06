@@ -4,6 +4,7 @@ import sys
 import numpy as np
 import torch
 from torch import nn
+import matplotlib as plt
 
 # Try to import your custom model (same as training)
 try:
@@ -114,6 +115,7 @@ def parse_input(line: str):
             raise ValueError("Please provide exactly three values: <height> <side> <swing>")
         h, s, sw = map(float, vals)
         return h, s, sw
+# ----------------------------------------
 
 # -------------------- Main loop --------------------
 def main():
@@ -129,7 +131,7 @@ def main():
     model = restore_model(ckpt)
 
     print("Strike Zone Called-Strike Predictor (type 'exit' to quit)")
-    print("Enter inputs as: <PlateLocHeight> <PlateLocSide> <Swing(0 or 1)>")
+    print("Enter inputs as: <PlaxteLocHeight> <PlateLocSide> <Swing(0 or 1)>")
     print("Example: 1.95 0.10 0")
     print(f"Decision threshold = {THRESH:.2f}\n")
 
