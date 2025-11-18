@@ -15,7 +15,7 @@ The script:
 """
 
 import os
-import math
+#import math
 import pandas as pd
 import numpy as np
 import torch
@@ -143,7 +143,7 @@ def build_fallback_mlp(input_dim: int = 3, output_dim: int = 1) -> nn.Module:
     The final layer outputs a single logit (no sigmoid).
     """
 try:
-    # handle model signature differences gracefully
+    # handle model signature differences 
     try:
         base_model = SZP(input_dim=len(FEATURES), output_dim=1)
     except TypeError:
