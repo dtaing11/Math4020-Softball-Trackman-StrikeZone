@@ -7,7 +7,7 @@ import torch
 from torch import nn
 import matplotlib.pyplot as plt
 
-from model_weight_surgery import (
+from Strickzone_Predictve_Model.utils.model_weight_surgery import (
     load_and_upgrade_checkpoint_to_5_inputs,
     DEVICE,
 )

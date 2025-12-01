@@ -10,7 +10,7 @@ import torch
 from torch import nn
 from torch.utils.data import Dataset, DataLoader
 
-from model_weight_surgery import (
+from Strickzone_Predictve_Model.utils.model_weight_surgery import (
     load_and_upgrade_checkpoint_to_5_inputs,
     save_checkpoint,
     DEVICE,
