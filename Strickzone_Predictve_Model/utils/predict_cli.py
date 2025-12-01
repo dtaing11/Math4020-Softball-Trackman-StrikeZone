@@ -121,6 +121,7 @@ def parse_input(line: str):
 def main():
     ckpt = load_checkpoint(MODEL_PATH)
 
+
     # Load scaler stats
     x_mean = np.array(ckpt["x_mean"], dtype=np.float32)  # shape (1,3)
     x_std  = np.array(ckpt["x_std"],  dtype=np.float32)  # shape (1,3)
@@ -128,6 +129,11 @@ def main():
     x_std[x_std == 0.0] = 1.0
 
     # Rebuild & load model
+    model = build_model_like_training().to(DEVICE)
+    print("Model architecture:\n")
+    print(model)
+
+
     model = restore_model(ckpt)
 
     print("Strike Zone Called-Strike Predictor (type 'exit' to quit)")
